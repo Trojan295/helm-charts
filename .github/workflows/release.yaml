@@ -20,7 +20,6 @@ jobs:
         run: |
           git fetch --prune --unshallow
       #    echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
-
       - name: Configure Git
         run: |
           git config user.name "moxbot"
@@ -40,4 +39,4 @@ jobs:
       - name: Run chart-releaser
         uses: moxbot/chart-releaser-action@v1.0.0
         env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
