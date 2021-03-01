@@ -15,3 +15,10 @@ data:
   ATL_TOMCAT_SCHEME: {{ if .Values.ingress.tls }}"https"{{ else }}"http"{{ end }}
   ATL_TOMCAT_SECURE: {{ if .Values.ingress.tls }}"true"{{ else }}"false"{{ end }}
   {{- end }}
+  {{- if .Values.databaseConnection.jdbcUrl }}
+  ATL_JDBC_URL: "{{ .Values.databaseConnection.jdbcUrl }}"
+  {{- else }}
+  ATL_JDBC_URL: "jdbc:{{ .Values.databaseConnection.type }}://{{ .Values.databaseConnection.host }}:{{ .Values.databaseConnection.port }}/{{ .Values.databaseConnection.database }}"
+  {{- end }}
+  ATL_JDBC_USER: "{{ .Values.databaseConnection.user }}"
+  ATL_DB_TYPE: "{{ .Values.databaseConnection.type }}"
