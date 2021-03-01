@@ -22,3 +22,6 @@ data:
   {{- end }}
   ATL_JDBC_USER: "{{ .Values.databaseConnection.user }}"
   ATL_DB_TYPE: "{{ .Values.databaseConnection.type }}"
+  ATL_LICENSE_KEY: "{{ .Values.licenseKey }}"
+  ATL_SERVER_ID: "{{ .Values.serverId }}"
+
