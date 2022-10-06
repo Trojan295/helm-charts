@@ -19,6 +19,7 @@ jobs:
         name: Build and push
         env:
           IMAGE_PUSH: "true"
+          IMAGE_MAKE_LATEST: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo $GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_REPOSITORY_OWNER} --password-stdin

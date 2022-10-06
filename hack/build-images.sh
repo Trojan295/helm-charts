@@ -12,6 +12,12 @@ function image::build {
 
   if [ -n "${IMAGE_PUSH:-}" ]; then
     docker push "${image}"
+
+    if [ -n "${IMAGE_MAKE_LATEST:-}" ]; then
+      local -r latest_tag="$(echo "${image}" | awk -F ':' '{print $1}'):latest"
+      docker tag "${image}" "${latest_tag}"
+      docker push "${latest_tag}"
+    fi
   fi
 }
 
