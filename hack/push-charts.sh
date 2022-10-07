@@ -14,7 +14,6 @@ function chart::push {
     -u "$REPO_USER" \
     -p "$REPO_PASSWORD" \
     "${dir_path}" \
-    -f \
     "$REPO_NAME"
 }
 
