@@ -2,8 +2,6 @@
 
 set -eEu
 
-IMAGES=( gothic2-online )
-
 function image::build {
   local -r dir_path="images/${1}"
   local -r image="$(cat ${dir_path}/image.txt)"
@@ -22,7 +20,7 @@ function image::build {
 }
 
 function main() {
-  for image in ${IMAGES[@]}; do
+  for image in $($(git diff --name-only HEAD^ images | awk -F '/' '{print $2}' | sort | uniq)); do
     image::build "${image}"
   done
 }

@@ -2,7 +2,6 @@
 
 set -eEu
 
-CHARTS=( gothic2-online )
 REPO_URL="https://charts.myhightech.org"
 REPO_NAME="myhightech"
 REPO_USER="${REPO_USER}"
@@ -15,13 +14,14 @@ function chart::push {
     -u "$REPO_USER" \
     -p "$REPO_PASSWORD" \
     "${dir_path}" \
+    -f \
     "$REPO_NAME"
 }
 
 function main() {
   helm repo add "$REPO_NAME" "$REPO_URL"
 
-  for chart in ${CHARTS[@]}; do
+  for chart in $(git diff --name-only HEAD^ charts | awk -F '/' '{print $2}' | sort | uniq); do
     chart::push "${chart}"
   done
 }
