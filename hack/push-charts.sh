@@ -21,7 +21,9 @@ function chart::push {
 function main() {
   helm repo add "$REPO_NAME" "$REPO_URL"
 
-  for chart in $(git diff --name-only HEAD^ charts | awk -F '/' '{print $2}' | sort | uniq); do
+  local -r charts="$(git diff --name-only HEAD~ charts | awk -F '/' '{print $2}' | sort | uniq)"
+
+  for chart in $charts; do
     chart::push "${chart}"
   done
 }

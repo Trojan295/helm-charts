@@ -20,7 +20,9 @@ function image::build {
 }
 
 function main() {
-  for image in $($(git diff --name-only HEAD^ images | awk -F '/' '{print $2}' | sort | uniq)); do
+  local -r images="$(git diff --name-only HEAD~ images | awk -F '/' '{print $2}' | sort | uniq)"
+
+  for image in $images; do
     image::build "${image}"
   done
 }
