@@ -2,8 +2,6 @@
 
 set -eEu
 
-IMAGES=( gothic2-online )
-
 function image::build {
   local -r dir_path="images/${1}"
   local -r image="$(cat ${dir_path}/image.txt)"
@@ -12,11 +10,21 @@ function image::build {
 
   if [ -n "${IMAGE_PUSH:-}" ]; then
     docker push "${image}"
+
+    if [ -n "${IMAGE_MAKE_LATEST:-}" ]; then
+      local -r latest_tag="$(echo "${image}" | awk -F ':' '{print $1}'):latest"
+      docker tag "${image}" "${latest_tag}"
+      docker push "${latest_tag}"
+    fi
   fi
 }
 
 function main() {
-  for image in ${IMAGES[@]}; do
+  local -r images="$(git diff --name-only HEAD~ images | awk -F '/' '{print $2}' | sort | uniq)"
+
+  echo "Building the following container images: $images"
+
+  for image in $images; do
     image::build "${image}"
   done
 }

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gothic2-online.fullname" . }}
+  labels:
+    {{- include "gothic2-online.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "gothic2-online.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gothic2-online.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.configuration.port | quote }}
+            - name: SERVER_HOSTNAME
+              value: {{ .Values.configuration.hostname | quote }}
+            - name: SERVER_PUBLIC
+              value: {{ .Values.configuration.public | quote }}
+            - name: SERVER_SLOTS
+              value: {{ .Values.configuration.slots | quote }}
+            - name: SERVER_RCON_PASS
+              value: {{ .Values.configuration.rconPass| quote }}
+          ports:
+            - name: gametcp
+              containerPort: {{ .Values.configuration.port }}
+              protocol: TCP
+            - name: gameudp
+              containerPort: {{ .Values.configuration.port }}
+              protocol: UDP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.configuration.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.configuration.port }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
