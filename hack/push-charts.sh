@@ -23,6 +23,8 @@ function main() {
 
   local -r charts="$(git diff --name-only HEAD~ charts | awk -F '/' '{print $2}' | sort | uniq)"
 
+  echo "Pushing the following Helm charts: $charts"
+
   for chart in $charts; do
     chart::push "${chart}"
   done

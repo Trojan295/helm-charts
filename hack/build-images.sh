@@ -22,6 +22,8 @@ function image::build {
 function main() {
   local -r images="$(git diff --name-only HEAD~ images | awk -F '/' '{print $2}' | sort | uniq)"
 
+  echo "Building the following container images: $images"
+
   for image in $images; do
     image::build "${image}"
   done
