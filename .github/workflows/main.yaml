@@ -3,7 +3,7 @@ name: Main
 on:
   push:
     branches:
-      - "add-ci"
+      - "main"
 
 jobs:
   build-docker:
